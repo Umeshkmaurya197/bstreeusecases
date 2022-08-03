@@ -69,6 +69,34 @@ public class BSTUseCases<T extends Comparable<T>> {
 		return false;
 	}
 
+	// deleteNode in BST
+	public Node<T> deleteNode(Node<T> root, T val) {
+		if (root.data.compareTo(val) > 0) {
+			root.left = deleteNode(root.left, val);
+		} else if (root.data.compareTo(val) < 0) {
+			root.right = deleteNode(root.right, val);
+		} else {
+			if (root.left == null && root.right == null) {
+				return null;
+			} else if (root.left == null) {
+				return root.right;
+			} else if (root.right == null) {
+				return root.left;
+			}
+			Node<T> IS = inOrderSuccessor(root.right);
+			root.data = IS.data;
+			root.right = deleteNode(root.right, IS.data);
+		}
+		return root;
+	}
+
+	private Node<T> inOrderSuccessor(Node<T> root) {
+		while(root.right!=null) {
+			root=root.left;
+		}
+		return root;
+	}
+
 	public static void main(String[] args) {
 		BSTUseCases<Integer> bstUseCases = new BSTUseCases<>();
 		Node<Integer> root = null;
@@ -85,6 +113,7 @@ public class BSTUseCases<T extends Comparable<T>> {
 		root = bstUseCases.insertNode(root, 16);
 		root = bstUseCases.insertNode(root, 63);
 		root = bstUseCases.insertNode(root, 67);
+		
 		System.out.print("InOrder BST :");
 		bstUseCases.inOrder(root); // InOrder BST : 3 11 16 22 30 40 56 60 63 65 67 70 95
 		System.out.println(" ");
@@ -95,6 +124,11 @@ public class BSTUseCases<T extends Comparable<T>> {
 		bstUseCases.postOrder(root); // PostOrder BST :3 11 16 22 30 40 60 63 65 67 70 95 56
 		System.out.println(" ");
 		System.out.println("Size of BST : " + bstUseCases.getSize(root)); // 13
-		System.out.println("Searching for element 63 : " + bstUseCases.searchNode(root, 63)); //true
+		System.out.println("Searching for element 63 : " + bstUseCases.searchNode(root, 63)); // true
+		root= bstUseCases.deleteNode(root, 63); //3 11 16 22 30 40 56 60 65 67 70 95  not in the list element 63
+		System.out.print("InOrder BST :");
+		bstUseCases.inOrder(root);
+		System.out.println(" ");
+	    System.out.println("Size of BST : " + bstUseCases.getSize(root)); // 12
 	}
 }
